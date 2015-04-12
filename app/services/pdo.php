@@ -1,6 +1,9 @@
 <?php
 
-$di->set('db', function() use ($config) {
+return function($c) {
+
+    $config = $c["config"];
+
     return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
         "host" => $config->database->host,
         "port" => $config->database->port,
@@ -8,4 +11,4 @@ $di->set('db', function() use ($config) {
         "password" => $config->database->password,
         "dbname" => $config->database->dbname
     ));
-});
+};

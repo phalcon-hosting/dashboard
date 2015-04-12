@@ -11,28 +11,24 @@ define('APPLICATION_PATH', realpath( ROOT_PATH . '/app'));
 defined('APPLICATION_ENV')
 || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
 
-// composer
 include(ROOT_PATH . "/vendor/autoload.php");
 
-// Debug mode only if dev
-if ("development" == APPLICATION_ENV) {
-    $debug = new \Phalcon\Debug();
-    $debug->listen();
-}
+$config = include ROOT_PATH . "/app/config/config.php";
+$di = include ROOT_PATH . "/app/services.php";
+$di["config"] = $config;
 
 
-// Read the configuration
-$config = include __DIR__ . "/../app/config/config.php";
+$app = new \Slim\Slim();
+$app->setName("PH");
+$app->container->set("di", $di);
+
+$routingManager = new \Slim\Routing\Manager([
+    ROOT_PATH . "/app/Controllers"
+], ROOT_PATH . "/app/cache");
+$routingManager->setAppName("PH");
+$routingManager->setDefaultNamespace("Controllers");
+$routingManager->generateRoutes();
 
 
-// Read services
-include __DIR__ . "/../app/services.php";
+$app->run();
 
-
-// Handle the request
-$application = new \Phalcon\Mvc\Application();
-$application->setDI($di);
-
-
-echo $application->handle()->getContent();
-// exception/404 managed from the dispatcher event

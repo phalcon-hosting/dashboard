@@ -1,18 +1,26 @@
 <?php
 
 namespace Controllers;
+use PH\Controller;
 
 /**
- * Class IndexController
+ * Class TestController
+ *
+ * @package Controllers
  */
-class IndexController extends ControllerBase
+class IndexController extends Controller
 {
-
+    /**
+     *
+     * @Route('/')
+     *
+     * @Method('GET')
+     * @Name('index')
+     *
+     */
     public function indexAction()
     {
-
+        $this->renderView("index/index.twig");
     }
 
-
 }
-

@@ -1,41 +1,11 @@
 <?php
-use Phalcon\Mvc\View,
-    PH\Master\Translate,
-    Phalcon\Mvc\View\Engine\Twig as TwigEngine;
 
-/**
- * Setting up the view component
- */
-$di->set('view', function() use ($config) {
+$loader = new Twig_Loader_Filesystem( ROOT_PATH . "/app/views");
 
-    $view = new View();
+$params = array(
+    "cache" => ROOT_PATH . "/app/cache"
+);
 
-    $view->setViewsDir($config->application->viewsDir);
+$twig = new Twig_Environment($loader, $params);
 
-    $view->registerEngines(array(
-        '.twig' => function($view, $di) use ($config) {
-
-            $options = [];
-
-            if ("development" == APPLICATION_ENV) {
-                $options['debug'] = true;
-            }
-
-            $twig = new TwigEngine($view, $di, $options);
-            $te=$twig->getTwig();
-            $te->getLoader()->addPath($config->application->viewsDir);
-
-
-            //=====================
-            // enable cache or not
-            if ("development" != APPLICATION_ENV) {
-                $te->setCache($config->application->cacheDir . "/twig");
-            }
-
-
-            return $twig;
-        }
-    ));
-
-    return $view;
-}, true);
+return $twig;
